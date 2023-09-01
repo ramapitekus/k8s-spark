@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: spark-worker
+  labels:
+    app: spark-worker
+spec:
+  serviceName: driver-to-worker-service
+  replicas: 2
+  selector:
+    matchLabels:
+      app: spark-worker
+  template:
+    metadata:
+      labels:
+        app: spark-worker
+    spec:
+      containers:
+      - name: spark-worker
+        image: apache/spark:3.4.1
+        resources:
+          requests:
+            cpu: "2"
+            memory: "2G"
+          limits:
+            cpu: "2"
+            memory: "2G"
+        env:
+        - name: SPARK_WORKER_MEMORY
+          value: "2000m"
+        - name: SPARK_EXECUTOR_MEMORY
+          value: "600m"
+        - name: SPARK_WORKER_CORES
+          value: "1"
+        - name: SPARK_WORKER_INSTANCES
+          value: "1"
+        - name: NUM_EXECUTORS
+          value: "1"
+        - name: SPARK_DRIVER_MEMORY
+          value: "500m"
+        command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker"]
+        args: ["spark://death-star-service:7077"]
+        ports:
+        - containerPort: 8081
+        - containerPort: 8083
+        - containerPort: 8084
+        volumeMounts:
+        - name: spark-storage
+          mountPath: /data
+      volumes:
+      - name: spark-storage
+        persistentVolumeClaim:
+          claimName: spark-worker-pvc

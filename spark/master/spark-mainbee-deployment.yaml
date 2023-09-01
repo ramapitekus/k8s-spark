@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: death-star
+  labels:
+    app: death-star
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: death-star
+  template:
+    metadata:
+      labels:
+        app: death-star
+    spec:
+      containers:
+      - name: death-star
+        image: apache/spark:3.4.1
+        command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.master.Master"]
+        ports:
+        - containerPort: 7077
+        - containerPort: 8080
+        - containerPort: 8083
