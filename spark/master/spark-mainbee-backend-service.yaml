@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: death-star-service
 spec:
+  type: LoadBalancer
   ports:
   - port: 7077
     name: spark
