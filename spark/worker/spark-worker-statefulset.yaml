@@ -17,7 +17,8 @@ spec:
     spec:
       containers:
       - name: spark-worker
-        image: apache/spark:3.4.1
+        image: spark-w-kafka:latest
+        imagePullPolicy: Never
         resources:
           requests:
             cpu: "2"
